@@ -10,6 +10,7 @@ app.use(
     origin: "http://localhost:5173",
   })
 );
+app.use(express.json());
 app.use("/api/cars", carRoutes);
 app.listen(3000, () => {
   console.log("Server started on port 3000");

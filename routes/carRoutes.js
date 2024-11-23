@@ -5,7 +5,6 @@ const Car = require("../models/Car");
 
 router.post("/", async (req, res) => {
   const newCar = new Car(req.body);
-
   try {
     const car = await newCar.save();
     res.status(201).json(car);
@@ -23,11 +22,28 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.put("/:id", async (res, req) => {
+router.put("/:id", async (req, res) => {
+  try {
+    const updatedCar = await Car.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedCar) {
+      return res.status(404).json({ message: "Car not found" });
+    }
+
+    res.json({ message: "Car updated successfully", car: updatedCar });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
   try {
     await Car.findByIdAndDelete(req.params.id);
     res.json({ message: "Pomyślnie usunięto samochód" });
-  } catch (err) {
+  } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
