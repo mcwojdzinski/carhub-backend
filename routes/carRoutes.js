@@ -22,6 +22,23 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/filter", async (req, res) => {
+  try {
+    const { brand, model, year, transmission } = req.query;
+
+    const filters = {};
+    if (brand) filters.brand = brand;
+    if (model) filters.model = model;
+    if (year) filters.year = Number(year);
+    if (transmission) filters.transmission = transmission;
+    const filteredCars = await Car.find(filters);
+    res.status(200).json(filteredCars);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Wystąpił błąd podczas filtrowania." });
+  }
+});
+
 router.put("/:id", async (req, res) => {
   try {
     const updatedCar = await Car.findByIdAndUpdate(req.params.id, req.body, {
@@ -30,10 +47,10 @@ router.put("/:id", async (req, res) => {
     });
 
     if (!updatedCar) {
-      return res.status(404).json({ message: "Car not found" });
+      return res.status(404).json({ message: "Nie znaleziono samochodu" });
     }
 
-    res.json({ message: "Car updated successfully", car: updatedCar });
+    res.json({ message: "Pomyślnie zaktualizowano samochód", car: updatedCar });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
