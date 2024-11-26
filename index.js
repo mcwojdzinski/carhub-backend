@@ -7,7 +7,7 @@ connectToDB();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://carhub-frontend.netlify.app",
   })
 );
 app.use(express.json());
